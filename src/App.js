@@ -212,7 +212,7 @@ const App = observer(({ store }) => {
 <div
   style={{
     position: 'absolute',
-    bottom: window.innerWidth < 768 ? '20px' : '0',  // For mobile: move up 20px, for desktop: bottom aligned
+    bottom: window.innerWidth < 768 ? '30px' : '0',  // For mobile: move up 20px, for desktop: bottom aligned
     right: window.innerWidth < 768 ? '10px' : '0',   // For mobile: move right slightly, for desktop: right aligned
     left: window.innerWidth < 768 ? 'auto' : 'unset', // Unset left positioning if on desktop, auto for mobile
     backgroundColor: 'transparent',
