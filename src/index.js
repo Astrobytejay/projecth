@@ -16,9 +16,10 @@ import './logger';
 import { ErrorBoundary } from 'react-error-boundary';
 
 // Create Polotno store
-const store = createStore({ key: 'nFA5H9elEytDyPyvKL7T' });
-window.store = store;
-store.addPage();
+const store = createStore({
+  key: 'nFA5H9elEytDyPyvKL7T',
+  showCredit: false,  // Add this line to disable the "Powered by Polotno" watermark
+});
 
 // Create project context
 const project = createProject({ store });
