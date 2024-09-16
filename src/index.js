@@ -15,6 +15,17 @@ import './index.css';
 import './logger';
 import { ErrorBoundary } from 'react-error-boundary';
 
+// Inject custom CSS to hide the Polotno watermark
+const style = document.createElement('style');
+style.innerHTML = `
+  .polotno-credit {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+  }
+`;
+document.head.appendChild(style); // Add the style to the document head
+
 // Create Polotno store
 const store = createStore({
   key: 'nFA5H9elEytDyPyvKL7T',  // Your Polotno key
