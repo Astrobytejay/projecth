@@ -45,7 +45,7 @@ DEFAULT_SECTIONS.push(QuotesSection, QrSection);
 DEFAULT_SECTIONS.unshift(MyDesignsSection);
 DEFAULT_SECTIONS.push(CustomAIImageSection);
 
-// Import your logo image
+// Import the logo image
 import logo from './assets/SI.png';
 
 const isStandalone = () => {
@@ -214,7 +214,7 @@ const App = observer(({ store }) => {
               </WorkspaceWrap>
             </PolotnoContainer>
 
-            {/* Overlay for the logo, responsive to desktop and mobile */}
+            {/* Overlay for the logo */}
             <div
               style={{
                 position: 'absolute',
