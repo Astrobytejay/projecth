@@ -84,13 +84,13 @@ const ChatPage = () => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001'}/generate-image`,
+        'https://backendsvatai-37d34386095c.herokuapp.com/generate-image',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt }),
         }
-      );
+      );      
 
       if (!response.ok) {
         throw new Error('Error generating image');

@@ -8,7 +8,7 @@ import { ImagesGrid } from 'polotno/side-panel/images-grid';
 import { useProject } from '../project';
 
 // Define backend URL from environment variables
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001'; 
+const BACKEND_URL = 'https://backendsvatai-37d34386095c.herokuapp.com';
 
 const GenerateTab = observer(({ store }) => {
   const project = useProject();
