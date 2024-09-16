@@ -212,8 +212,8 @@ const App = observer(({ store }) => {
 <div
   style={{
     position: 'absolute',
-    bottom: window.innerWidth < 768 ? '34px' : '0',  // For mobile: move up 20px, for desktop: bottom aligned
-    right: window.innerWidth < 768 ? '50px' : '0',   // For mobile: move right slightly, for desktop: right aligned
+    bottom: window.innerWidth < 768 ? '45px' : '-7px',  // For mobile: move up 20px, for desktop: bottom aligned
+    right: window.innerWidth < 768 ? '-5px' : '2px',   // For mobile: move right slightly, for desktop: right aligned
     left: window.innerWidth < 768 ? 'auto' : 'unset', // Unset left positioning if on desktop, auto for mobile
     backgroundColor: 'transparent',
     zIndex: 1000,
@@ -227,8 +227,8 @@ const App = observer(({ store }) => {
     src={logo}
     alt="Logo"
     style={{
-      width: window.innerWidth < 768 ? '40px' : '50px',  // Adjust size for mobile and desktop
-      height: 'auto',
+      width: window.innerWidth < 768 ? '90px' : '90px',  // Adjust width for mobile and desktop
+      height: window.innerWidth < 768 ? '40px' : '50px', // Adjust height for desktop, auto on mobile for aspect ratio
       maxWidth: '100%',
     }}
   />
