@@ -208,29 +208,32 @@ const App = observer(({ store }) => {
             </PolotnoContainer>
 
             {/* Overlay for the logo */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '0', // Move it to cover the bottom watermark
-                right: '0',
-                backgroundColor: 'transparent',
-                zIndex: 1000,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '10px',
-              }}
-            >
-              <img
-                src={logo}
-                alt="Logo"
-                style={{
-                  width: '100px', // Slightly bigger to cover more of the watermark
-                  height: 'auto',
-                  maxWidth: '100%',
-                }}
-              />
-            </div>
+            {/* Overlay for the logo */}
+<div
+  style={{
+    position: 'absolute',
+    bottom: window.innerWidth < 768 ? '20px' : '0',  // For mobile: move up 20px, for desktop: bottom aligned
+    right: window.innerWidth < 768 ? '10px' : '0',   // For mobile: move right slightly, for desktop: right aligned
+    left: window.innerWidth < 768 ? 'auto' : 'unset', // Unset left positioning if on desktop, auto for mobile
+    backgroundColor: 'transparent',
+    zIndex: 1000,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '10px',
+  }}
+>
+  <img
+    src={logo}
+    alt="Logo"
+    style={{
+      width: window.innerWidth < 768 ? '40px' : '50px',  // Adjust size for mobile and desktop
+      height: 'auto',
+      maxWidth: '100%',
+    }}
+  />
+</div>
+
           </div>
         }/>
       </Routes>
