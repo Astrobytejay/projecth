@@ -211,18 +211,25 @@ const App = observer(({ store }) => {
               </WorkspaceWrap>
             </PolotnoContainer>
 
-            {/* Overlay to hide the watermark */}
+            {/* Extended Overlay to hide the watermark and add a custom label */}
             <div
               style={{
                 position: 'absolute',
                 bottom: '10px',
                 right: '10px',
                 backgroundColor: 'white',
-                width: '100px',
-                height: '30px',
+                padding: '5px 20px',
+                borderRadius: '5px',
                 zIndex: 1000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-            ></div>
+            >
+              <span style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                Policy by www.svatai.com
+              </span>
+            </div>
           </div>
         }/>
       </Routes>
