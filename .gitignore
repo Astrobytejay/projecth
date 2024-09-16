@@ -6,8 +6,6 @@ logs/
 *.log
 
 # Build outputs
-dist/
-build/
+.env
+build
 
-.env
-.env
