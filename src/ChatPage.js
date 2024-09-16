@@ -111,9 +111,7 @@ const ChatPage = () => {
   };
 
   const handleEditImage = (imagePath) => {
-    const studioUrl = `http://localhost:3000/studio?image=${encodeURIComponent(
-      imagePath
-    )}`;
+    const studioUrl = `https://svataidemo.vercel.app/studio?image=${encodeURIComponent(imagePath)}`;
     window.location.href = studioUrl;
   };
 
