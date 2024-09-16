@@ -168,8 +168,8 @@ export const FileMenu = observer(({ store, project }) => {
               GitHub repository
             </a>
             . The repository doesn't have full source.{' '}
-            <strong>Polotno Studio</strong> is powered by{' '}
-            <a href="https://polotno.com/" target="_blank">
+            <strong>Svat AI</strong> is powered by{' '}
+            <a href="https://svatai.com/" target="_blank">
               Polotno SDK project
             </a>
             . All core "canvas editor" functionality are implemented by{' '}
