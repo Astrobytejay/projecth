@@ -15,20 +15,9 @@ import './index.css';
 import './logger';
 import { ErrorBoundary } from 'react-error-boundary';
 
-// Inject custom CSS to hide the Polotno watermark
-const style = document.createElement('style');
-style.innerHTML = `
-  .polotno-credit {
-    position: absolute;
-    left: -9999px;
-    top: -9999px;
-  }
-`;
-document.head.appendChild(style); // Add the style to the document head
-
-// Create Polotno store
+// Create Polotno store with your new key and watermark disabled
 const store = createStore({
-  key: 'cKYQM7j8CGG8XcKkSAaX',  // Your Polotno key
+  key: 'cKYQM7j8CGG8XcKkSAaX',  // Your new Polotno key
   showCredit: false             // Disable the "Powered by Polotno" watermark
 });
 
@@ -36,22 +25,6 @@ const store = createStore({
 if (store.pages.length === 0) {
   store.addPage();
 }
-
-// Function to remove the watermark from the DOM
-const removePolotnoCredit = () => {
-  const creditElement = document.querySelector('.polotno-credit');
-  if (creditElement) {
-    creditElement.style.display = 'none';
-  }
-};
-
-// Call the function once after the store is initialized
-store.on('change', () => {
-  removePolotnoCredit();
-});
-
-// Ensure the function is called after DOM content is loaded
-document.addEventListener('DOMContentLoaded', removePolotnoCredit);
 
 window.store = store;
 
