@@ -1,4 +1,6 @@
+/* Hide the Polotno watermark by moving it off-screen */
 .polotno-credit {
-    display: none !important;
-  }
-  
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
