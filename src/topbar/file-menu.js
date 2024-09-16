@@ -125,7 +125,7 @@ export const FileMenu = observer(({ store, project }) => {
       <Dialog
         icon="info-sign"
         onClose={() => toggleFaq(false)}
-        title="About Polotno Studio"
+        title="About Svat AI"
         isOpen={faqOpened}
         style={{ width: '80%', maxWidth: '700px' }}
       >
@@ -138,7 +138,7 @@ export const FileMenu = observer(({ store, project }) => {
           <p>
             Deep Learning{' '}
             <a href="#" target="_blank">
-              GitHub repository
+              learn more about us
             </a>
             . <strong>Svat AI</strong> is powered by{' '}
             <a href="https://svatai.com/" target="_blank">
