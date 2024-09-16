@@ -4,6 +4,9 @@ import { Button, Dialog } from '@blueprintjs/core'; // Import Dialog and Button 
 import { Spinner } from '@blueprintjs/core';
 import { Routes, Route } from 'react-router-dom'; // Import Routes and Route for navigation
 
+// Importing logo from the correct path
+import logo from './assets/SI.png';  // <-- Correct path to the logo
+
 import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from 'polotno';
 import { Toolbar } from 'polotno/toolbar/toolbar';
 import { ZoomButtons } from 'polotno/toolbar/zoom-buttons';
@@ -37,16 +40,6 @@ import Signup from './topbar/Signup';  // Import Signup component from topbar
 
 // Load default translations
 setTranslations(en);
-
-// Replace elements section with just shapes and icons
-DEFAULT_SECTIONS.splice(3, 1, ShapesSection);
-DEFAULT_SECTIONS.splice(3, 0, IconsSection);
-DEFAULT_SECTIONS.push(QuotesSection, QrSection);
-DEFAULT_SECTIONS.unshift(MyDesignsSection);
-DEFAULT_SECTIONS.push(CustomAIImageSection);
-
-// Import the logo image
-import logo from './assets/SI.png';
 
 const isStandalone = () => {
   return (
