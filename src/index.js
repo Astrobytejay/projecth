@@ -18,7 +18,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 // Create Polotno store
 const store = createStore({
   key: 'nFA5H9elEytDyPyvKL7T',
-  showCredit: false,  // Add this line to disable the "Powered by Polotno" watermark
+  showCredit: true,  // Add this line to disable the "Powered by Polotno" watermark
 });
 
 // Create project context
