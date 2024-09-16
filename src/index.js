@@ -17,7 +17,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 // Create Polotno store with your new key and watermark disabled
 const store = createStore({
-  key: 'cKYQM7j8CGG8XcKkSAaX',  // Your new Polotno key
+  key: 'ajmZpbd8NK3uZ4-_5JNO',  // Your new Polotno key
   showCredit: false             // Disable the "Powered by Polotno" watermark
 });
 
