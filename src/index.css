@@ -1,5 +1,4 @@
-.polotno-credit {
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
+/* styles.css */
+div[data-watermark] {
+  display: none !important;
 }

@@ -189,7 +189,7 @@ const App = observer(({ store }) => {
         <Route path="/login" element={<Login />} /> {/* Add login route */}
         <Route path="/signup" element={<Signup />} /> {/* Add signup route */}
         <Route path="/" element={
-          <div style={{ height: 'calc(100% - 50px)' }}>
+          <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
             <PolotnoContainer className="polotno-app-container">
               <SidePanelWrap>
                 <SidePanel store={store} sections={DEFAULT_SECTIONS} />
@@ -210,6 +210,19 @@ const App = observer(({ store }) => {
                 <PagesTimeline store={store} />
               </WorkspaceWrap>
             </PolotnoContainer>
+
+            {/* Overlay to hide the watermark */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                backgroundColor: 'white',
+                width: '100px',
+                height: '30px',
+                zIndex: 1000,
+              }}
+            ></div>
           </div>
         }/>
       </Routes>
