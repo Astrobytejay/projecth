@@ -211,8 +211,8 @@ const App = observer(({ store }) => {
             <div
               style={{
                 position: 'absolute',
-                bottom: '10px',
-                right: '10px',
+                bottom: '0', // Move it to cover the bottom watermark
+                right: '0',
                 backgroundColor: 'transparent',
                 zIndex: 1000,
                 display: 'flex',
@@ -225,7 +225,7 @@ const App = observer(({ store }) => {
                 src={logo}
                 alt="Logo"
                 style={{
-                  width: '80px', // Adjust width for desktop
+                  width: '100px', // Slightly bigger to cover more of the watermark
                   height: 'auto',
                   maxWidth: '100%',
                 }}
