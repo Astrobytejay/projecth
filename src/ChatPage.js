@@ -111,7 +111,7 @@ const ChatPage = () => {
   };
 
   const handleEditImage = (imagePath) => {
-    const studioUrl = `https://svatai.vercel.app/studio?image=${encodeURIComponent(imagePath)}`;
+    const studioUrl = `https://www.svatai.com/studio?image=${encodeURIComponent(imagePath)}`;
     window.location.href = studioUrl;
   };
 
