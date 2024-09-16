@@ -28,7 +28,7 @@ document.head.appendChild(style); // Add the style to the document head
 
 // Create Polotno store
 const store = createStore({
-  key: 'nFA5H9elEytDyPyvKL7T',  // Your Polotno key
+  key: 'cKYQM7j8CGG8XcKkSAaX',  // Your Polotno key
   showCredit: false             // Disable the "Powered by Polotno" watermark
 });
 
