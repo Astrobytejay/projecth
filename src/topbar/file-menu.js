@@ -130,7 +130,7 @@ export const FileMenu = observer(({ store, project }) => {
         style={{ width: '80%', maxWidth: '700px' }}
       >
         <div className={Classes.DIALOG_BODY}>
-          <h2>What is Polotno Studio?</h2>
+          <h2>What  is Svat ai??</h2>
           <p>
             <strong>SVAT AI</strong> - Deep Learning AI
           </p>
@@ -142,7 +142,7 @@ export const FileMenu = observer(({ store, project }) => {
             </a>
             . <strong>Svat AI</strong> is powered by{' '}
             <a href="https://svatai.com/" target="_blank">
-              Polotno SDK project
+              Svatai SDK project
             </a>
             . All core "canvas editor" functionality are implemented by{' '}
             <strong>Svatai</strong> npm package (A full Deep Learning).

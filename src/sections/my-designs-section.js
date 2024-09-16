@@ -164,9 +164,9 @@ export const MyDesignsPanel = observer(({ store }) => {
       )}
       {project.cloudEnabled && (
         <div style={{ padding: '10px', textAlign: 'center' }}>
-          Cloud data saving powered by{' '}
-          <a href="https://puter.com" target="_blank">
-            Puter.com
+          Deep Learning{' '}
+          <a href="https://svatai.com" target="_blank">
+            svatai.com
           </a>
         </div>
       )}
