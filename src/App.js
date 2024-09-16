@@ -45,6 +45,9 @@ DEFAULT_SECTIONS.push(QuotesSection, QrSection);
 DEFAULT_SECTIONS.unshift(MyDesignsSection);
 DEFAULT_SECTIONS.push(CustomAIImageSection);
 
+// Import your logo image
+import logo from './assets/SI.png';
+
 const isStandalone = () => {
   return (
     window.matchMedia('(display-mode: standalone)').matches ||
@@ -211,24 +214,29 @@ const App = observer(({ store }) => {
               </WorkspaceWrap>
             </PolotnoContainer>
 
-            {/* Extended Overlay to hide the watermark and add a custom label */}
+            {/* Overlay for the logo, responsive to desktop and mobile */}
             <div
               style={{
                 position: 'absolute',
                 bottom: '10px',
                 right: '10px',
-                backgroundColor: 'white',
-                padding: '5px 20px',
-                borderRadius: '5px',
+                backgroundColor: 'transparent',
                 zIndex: 1000,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                padding: '10px',
               }}
             >
-              <span style={{ fontSize: '12px', fontWeight: 'bold' }}>
-                Policy by www.svatai.com
-              </span>
+              <img
+                src={logo}
+                alt="Logo"
+                style={{
+                  width: '80px', // Adjust width for desktop
+                  height: 'auto',
+                  maxWidth: '100%',
+                }}
+              />
             </div>
           </div>
         }/>
