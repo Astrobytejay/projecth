@@ -16,6 +16,16 @@ import './logger';
 import { ErrorBoundary } from 'react-error-boundary';
 
 // Create Polotno store
+const store = createStore({
+  key: 'nFA5H9elEytDyPyvKL7T',  // Your Polotno key
+  showCredit: false             // Disable the "Powered by Polotno" watermark
+});
+
+// Ensure a page is added
+if (store.pages.length === 0) {
+  store.addPage();
+}
+
 // Function to remove the watermark from the DOM
 const removePolotnoCredit = () => {
   const creditElement = document.querySelector('.polotno-credit');
@@ -32,6 +42,7 @@ store.on('change', () => {
 // Ensure the function is called after DOM content is loaded
 document.addEventListener('DOMContentLoaded', removePolotnoCredit);
 
+window.store = store;
 
 // Create project context
 const project = createProject({ store });
