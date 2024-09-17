@@ -25,7 +25,7 @@ import { MyDesignsSection } from './sections/my-designs-section';
 
 import { AIWriteMenu } from './ai-text';
 import { useProject } from './project';
-import { ImageRemoveBackground } from './components/ImageRemoveBackground'; // Ensure correct path
+import { ImageRemoveBackground } from './sections/ImageRemoveBackground'; // Adjust the path if necessary
 
 import fr from './translations/fr';
 import en from './translations/en';
