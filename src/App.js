@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button, Dialog, Spinner } from '@blueprintjs/core'; // Combined imports
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom'; // Import useLocation and Navigate
+import { useLocation } from 'react-router-dom'; // Keep useLocation for query parameters
 
 // Importing logo from the correct path
 import logo from './assets/SI.png';  // <-- Correct path to the logo
@@ -58,8 +58,7 @@ const getOffsetHeight = () => {
   if (isStandalone()) {
     const safeAreaInsetBottomString = getComputedStyle(
       document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)'
-    );
+    ).getPropertyValue('env(safe-area-inset-bottom)');
     if (safeAreaInsetBottomString) {
       safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
     }
@@ -169,77 +168,55 @@ const App = observer(({ store }) => {
       onDrop={handleDrop}
     >
       <Topbar store={store} />
-      <Routes>
-        {/* Protected Route for Studio */}
-        <Route
-          path="/studio"
-          element={
-            isAuthenticated() ? (
-              <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
-                <PolotnoContainer className="polotno-app-container">
-                  <SidePanelWrap>
-                    <SidePanel store={store} sections={DEFAULT_SECTIONS} />
-                  </SidePanelWrap>
-                  <WorkspaceWrap>
-                    <Toolbar
-                      store={store}
-                      components={{
-                        ImageRemoveBackground,
-                        TextAIWrite: AIWriteMenu,
-                      }}
-                    />
-                    <Workspace
-                      store={store}
-                      components={{ Tooltip, TextAIWrite: AIWriteMenu }}
-                    />
-                    <ZoomButtons store={store} />
-                    <PagesTimeline store={store} />
-                  </WorkspaceWrap>
-                </PolotnoContainer>
+      {/* Main Content */}
+      <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
+        <PolotnoContainer className="polotno-app-container">
+          <SidePanelWrap>
+            <SidePanel store={store} sections={DEFAULT_SECTIONS} />
+          </SidePanelWrap>
+          <WorkspaceWrap>
+            <Toolbar
+              store={store}
+              components={{
+                ImageRemoveBackground,
+                TextAIWrite: AIWriteMenu,
+              }}
+            />
+            <Workspace
+              store={store}
+              components={{ Tooltip, TextAIWrite: AIWriteMenu }}
+            />
+            <ZoomButtons store={store} />
+            <PagesTimeline store={store} />
+          </WorkspaceWrap>
+        </PolotnoContainer>
 
-                {/* Overlay for the logo */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: window.innerWidth < 768 ? '45px' : '-7px',
-                    right: window.innerWidth < 768 ? '-5px' : '0px',
-                    left: window.innerWidth < 768 ? 'auto' : 'unset',
-                    backgroundColor: 'transparent',
-                    zIndex: 1000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '10px',
-                  }}
-                >
-                  <img
-                    src={logo}
-                    alt="Logo"
-                    style={{
-                      width: window.innerWidth < 768 ? '90px' : '90px',
-                      height: window.innerWidth < 768 ? '40px' : '50px',
-                      maxWidth: '100%',
-                    }}
-                  />
-                </div>
-              </div>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-
-        {/* Login Route */}
-        <Route path="/login" element={<Login />} />
-        {/* Signup Route */}
-        <Route path="/signup" element={<Signup />} />
-
-        {/* Default Route */}
-        <Route
-          path="/"
-          element={<Navigate to={isAuthenticated() ? '/studio' : '/login'} />}
-        />
-      </Routes>
+        {/* Overlay for the logo */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: window.innerWidth < 768 ? '45px' : '-7px',
+            right: window.innerWidth < 768 ? '-5px' : '0px',
+            left: window.innerWidth < 768 ? 'auto' : 'unset',
+            backgroundColor: 'transparent',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
+          }}
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              width: window.innerWidth < 768 ? '90px' : '90px',
+              height: window.innerWidth < 768 ? '40px' : '50px',
+              maxWidth: '100%',
+            }}
+          />
+        </div>
+      </div>
 
       {/* Confirmation Dialog */}
       <Dialog
