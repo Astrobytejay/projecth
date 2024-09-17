@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button, Dialog } from '@blueprintjs/core'; // Import Dialog and Button for modal
 import { Spinner } from '@blueprintjs/core';
-import { Routes, Route } from 'react-router-dom'; // Import Routes and Route for navigation
+import { Routes, Route, Navigate } from 'react-router-dom'; // Import Routes, Route, Navigate for navigation
+import { supabase } from './supabaseClient'; // Import Supabase client for authentication
 
 // Importing logo from the correct path
 import logo from './assets/SI.png';  // <-- Correct path to the logo
@@ -37,9 +38,40 @@ import ptBr from './translations/pt-br';
 import Topbar from './topbar/topbar';
 import Login from './topbar/Login';  // Import Login component from topbar
 import Signup from './topbar/Signup';  // Import Signup component from topbar
+import ChatPage from './ChatPage';  // Import ChatPage component
 
 // Load default translations
 setTranslations(en);
+
+// Helper function for checking authentication
+const ProtectedRoute = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error checking session:', error);
+        } else {
+          console.log('Session:', session); // Log session for debugging
+          setIsAuthenticated(!!session);
+        }
+      } catch (err) {
+        console.error('Failed to check session:', err);
+      }
+      setLoading(false);
+    };
+    checkSession();
+  }, []);
+
+  if (loading) {
+    return <Spinner />; // Show loading while checking authentication
+  }
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
 
 const isStandalone = () => {
   return (
@@ -54,8 +86,7 @@ const getOffsetHeight = () => {
   if (isStandalone()) {
     const safeAreaInsetBottomString = getComputedStyle(
       document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)'
-    );
+    ).getPropertyValue('env(safe-area-inset-bottom)');
     if (safeAreaInsetBottomString) {
       safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
     }
@@ -67,7 +98,6 @@ const getOffsetHeight = () => {
       }
     }
   }
-
   return window.innerHeight - safeAreaInsetBottom;
 };
 
@@ -100,11 +130,8 @@ const App = observer(({ store }) => {
     clearWorkspace(); // Clear the canvas before adding the new image
 
     if (store.activePage) {
-      // Set image size to 1024x1024
       const imageWidth = 1024;
       const imageHeight = 1024;
-
-      // Add the new image to the center of the canvas
       store.activePage.addElement({
         type: 'image',
         src: imageUrl, // Ensure image loaded from Replicate API
@@ -182,9 +209,16 @@ const App = observer(({ store }) => {
     >
       <Topbar store={store} />
       <Routes>
-        <Route path="/login" element={<Login />} /> {/* Add login route */}
-        <Route path="/signup" element={<Signup />} /> {/* Add signup route */}
-        <Route path="/" element={
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Default Route: Redirect to login page */}
+        <Route path="/" element={<Navigate to="/login" />} />
+
+        {/* Protected Routes: Accessible only when logged in */}
+        <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+        <Route path="/main" element={<ProtectedRoute>
           <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
             <PolotnoContainer className="polotno-app-container">
               <SidePanelWrap>
@@ -208,50 +242,40 @@ const App = observer(({ store }) => {
             </PolotnoContainer>
 
             {/* Overlay for the logo */}
-            {/* Overlay for the logo */}
-<div
-  style={{
-    position: 'absolute',
-    bottom: window.innerWidth < 768 ? '45px' : '-7px',  // For mobile: move up 20px, for desktop: bottom aligned
-    right: window.innerWidth < 768 ? '-5px' : '0px',   // For mobile: move right slightly, for desktop: right aligned
-    left: window.innerWidth < 768 ? 'auto' : 'unset', // Unset left positioning if on desktop, auto for mobile
-    backgroundColor: 'transparent',
-    zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px',
-  }}
->
-  <img
-    src={logo}
-    alt="Logo"
-    style={{
-      width: window.innerWidth < 768 ? '90px' : '90px',  // Adjust width for mobile and desktop
-      height: window.innerWidth < 768 ? '40px' : '50px', // Adjust height for desktop, auto on mobile for aspect ratio
-      maxWidth: '100%',
-    }}
-  />
-</div>
-
+            <div
+              style={{
+                position: 'absolute',
+                bottom: window.innerWidth < 768 ? '45px' : '-7px',
+                right: window.innerWidth < 768 ? '-5px' : '0px',
+                left: window.innerWidth < 768 ? 'auto' : 'unset',
+                backgroundColor: 'transparent',
+                zIndex: 1000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '10px',
+              }}
+            >
+              <img
+                src={logo}
+                alt="Logo"
+                style={{
+                  width: window.innerWidth < 768 ? '90px' : '90px',
+                  height: window.innerWidth < 768 ? '40px' : '50px',
+                  maxWidth: '100%',
+                }}
+              />
+            </div>
           </div>
-        }/>
+        </ProtectedRoute>} />
       </Routes>
 
       {/* Confirmation Dialog */}
-      <Dialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        title="Clear Canvas?"
-      >
-        <div className="bp3-dialog-body">
-          Do you want to clear the current canvas and load the new image?
-        </div>
+      <Dialog isOpen={isDialogOpen} onClose={handleCancel} title="Clear Canvas?">
+        <div className="bp3-dialog-body">Do you want to clear the current canvas and load the new image?</div>
         <div className="bp3-dialog-footer">
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button intent="primary" onClick={handleConfirm}>
-            Confirm
-          </Button>
+          <Button intent="primary" onClick={handleConfirm}>Confirm</Button>
         </div>
       </Dialog>
 

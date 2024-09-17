@@ -2,30 +2,28 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginBackground from '../assets/dsd.webp';  // Correct image path
 import './login.css';  // Import the CSS file
+import { supabase } from '../supabaseClient'; // Ensure this points to your Supabase client
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);  // Toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8001/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('authToken', data.access_token);
-        navigate('/');  // Redirect to ChatPage after successful login
+      if (error) {
+        console.error('Login error:', error.message);
+        alert('Login failed: ' + error.message);
       } else {
-        alert('Login failed');
+        localStorage.setItem('session', JSON.stringify(data.session));
+        navigate('/chat');  // Redirect to ChatPage after successful login
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -43,13 +41,13 @@ const Login = () => {
         <h2 className="login-title">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="input-group">
-            <label className="input-label">Username:</label>
+            <label className="input-label">Email:</label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="input-field"
-              placeholder="Enter your username"
+              placeholder="Enter your email"
             />
           </div>
           <div className="input-group">

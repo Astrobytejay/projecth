@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import signupBackground from '../assets/trr.webp';  // Correct image path
 import './signup.css';  // Import the CSS file
+import { supabase } from '../supabaseClient'; // Supabase client
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -15,18 +16,24 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8001/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            username: username,
+            full_name: fullName,
+            phone_number: phoneNumber,  // Optional phone number field
+          },
         },
-        body: JSON.stringify({ username, password, email, fullName, phoneNumber }),
       });
 
-      if (response.ok) {
-        navigate('/login');  // Redirect to login after successful signup
+      if (error) {
+        console.error('Signup error:', error.message);
+        alert('Signup failed: ' + error.message);
       } else {
-        alert('Signup failed');
+        alert('Signup successful! Please log in.');
+        navigate('/login');  // Redirect to login after successful signup
       }
     } catch (error) {
       console.error('Signup error:', error);
