@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // Make sure Router is properly imported
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';  // Import Navigate to handle redirects
 
 import { createStore } from 'polotno/model/store';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -63,7 +63,12 @@ function Fallback({ error, resetErrorBoundary }) {
   );
 }
 
-// Render the app with routing and Auth0Provider
+// Authentication Check: Redirects user based on whether they are logged in
+const isAuthenticated = () => {
+  return localStorage.getItem('session') !== null;
+};
+
+// Define route structure with proper authentication
 root.render(
   <ErrorBoundary
     FallbackComponent={Fallback}
@@ -78,11 +83,20 @@ root.render(
       <Auth0Provider domain={AUTH_DOMAIN} clientId={ID} redirectUri={REDIRECT}>
         <Router>
           <Routes>
-            <Route path="/" element={<ChatPage />} />
-            <Route path="/edit-image" element={<EditPage />} />
-            <Route path="/studio" element={<App store={store} />} />
-            <Route path="/login" element={<Login />} />  {/* Add login route */}
-            <Route path="/signup" element={<Signup />} />  {/* Add signup route */}
+            {/* Default route redirects to login */}
+            <Route path="/" element={isAuthenticated() ? <Navigate to="/chat" /> : <Navigate to="/login" />} />
+
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+
+            {/* Protected Routes (only accessible if logged in) */}
+            <Route path="/chat" element={isAuthenticated() ? <ChatPage /> : <Navigate to="/login" />} />
+            <Route path="/edit-image" element={isAuthenticated() ? <EditPage /> : <Navigate to="/login" />} />
+            <Route path="/studio" element={isAuthenticated() ? <App store={store} /> : <Navigate to="/login" />} />
+
+            {/* Catch-all route to redirect to login if no other route matches */}
+            <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </Router>
       </Auth0Provider>
