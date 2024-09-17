@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Dialog } from '@blueprintjs/core'; // Import Dialog and Button for modal
-import { Spinner } from '@blueprintjs/core';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'; // Added useLocation to access query parameters
+import { Button, Dialog, Spinner } from '@blueprintjs/core'; // Combined imports
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'; // Import useLocation and Navigate
 
 // Importing logo from the correct path
 import logo from './assets/SI.png';  // <-- Correct path to the logo
@@ -37,7 +36,6 @@ import ptBr from './translations/pt-br';
 import Topbar from './topbar/topbar';
 import Login from './topbar/Login';  // Import Login component from topbar
 import Signup from './topbar/Signup';  // Import Signup component from topbar
-import ChatPage from './ChatPage';  // Import ChatPage component
 
 // Load default translations
 setTranslations(en);
@@ -45,19 +43,6 @@ setTranslations(en);
 // Helper function to check if the user is authenticated
 const isAuthenticated = () => {
   return localStorage.getItem('session') !== null;
-};
-
-// Redirect Component to Handle Route Protection
-const ProtectedRoute = ({ element }) => {
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/login');
-    }
-  }, [navigate]);
-  
-  return isAuthenticated() ? element : null;
 };
 
 const isStandalone = () => {
@@ -73,7 +58,8 @@ const getOffsetHeight = () => {
   if (isStandalone()) {
     const safeAreaInsetBottomString = getComputedStyle(
       document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)');
+    ).getPropertyValue('env(safe-area-inset-bottom)'
+    );
     if (safeAreaInsetBottomString) {
       safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
     }
@@ -85,15 +71,16 @@ const getOffsetHeight = () => {
       }
     }
   }
+
   return window.innerHeight - safeAreaInsetBottom;
 };
 
 const useHeight = () => {
   const [height, setHeight] = React.useState(getOffsetHeight());
   useEffect(() => {
-    window.addEventListener('resize', () => {
-      setHeight(getOffsetHeight());
-    });
+    const handleResize = () => setHeight(getOffsetHeight());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
   return height;
 };
@@ -104,7 +91,7 @@ const App = observer(({ store }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false); // State to manage modal visibility
   const [newImageUrl, setNewImageUrl] = useState(null); // Store the URL of the new image to be loaded
 
-  const location = useLocation();  // To retrieve the query parameters for the image
+  const location = useLocation(); // To access query parameters
 
   // Clear the workspace
   const clearWorkspace = () => {
@@ -119,8 +106,11 @@ const App = observer(({ store }) => {
     clearWorkspace(); // Clear the canvas before adding the new image
 
     if (store.activePage) {
+      // Set image size to 1024x1024
       const imageWidth = 1024;
       const imageHeight = 1024;
+
+      // Add the new image to the center of the canvas
       store.activePage.addElement({
         type: 'image',
         src: imageUrl, // Ensure image loaded from Replicate API
@@ -144,14 +134,16 @@ const App = observer(({ store }) => {
     setIsDialogOpen(false); // Close the dialog without loading the new image
   };
 
-  // Effect to load the image from query params when the studio is opened
+  // Effect to load the image from query params when the app loads
   useEffect(() => {
+    project.firstLoad();
+
     const imageUrl = new URLSearchParams(location.search).get('image');
     if (imageUrl) {
       setNewImageUrl(imageUrl); // Store the new image URL
       setIsDialogOpen(true); // Show the dialog asking whether to clear the canvas
     }
-  }, [location.search, store]);
+  }, [store, project, location.search]);
 
   // Handle file drop onto the canvas
   const handleDrop = (ev) => {
@@ -178,82 +170,91 @@ const App = observer(({ store }) => {
     >
       <Topbar store={store} />
       <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-
-        {/* Default Route: Redirect to login page */}
-        <Route path="/" element={<Navigate to="/login" />} />
-
-        {/* Protected Chat Route */}
-        <Route path="/chat" element={<ProtectedRoute element={<ChatPage />} />} />
-
-        {/* Protected Main Route */}
+        {/* Protected Route for Studio */}
         <Route
-          path="/main"
+          path="/studio"
           element={
-            <ProtectedRoute
-              element={
-                <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
-                  <PolotnoContainer className="polotno-app-container">
-                    <SidePanelWrap>
-                      <SidePanel store={store} sections={DEFAULT_SECTIONS} />
-                    </SidePanelWrap>
-                    <WorkspaceWrap>
-                      <Toolbar
-                        store={store}
-                        components={{
-                          ImageRemoveBackground,
-                          TextAIWrite: AIWriteMenu,
-                        }}
-                      />
-                      <Workspace
-                        store={store}
-                        components={{ Tooltip, TextAIWrite: AIWriteMenu }}
-                      />
-                      <ZoomButtons store={store} />
-                      <PagesTimeline store={store} />
-                    </WorkspaceWrap>
-                  </PolotnoContainer>
-
-                  {/* Overlay for the logo */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: window.innerWidth < 768 ? '45px' : '-7px',
-                      right: window.innerWidth < 768 ? '-5px' : '0px',
-                      left: window.innerWidth < 768 ? 'auto' : 'unset',
-                      backgroundColor: 'transparent',
-                      zIndex: 1000,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '10px',
-                    }}
-                  >
-                    <img
-                      src={logo}
-                      alt="Logo"
-                      style={{
-                        width: window.innerWidth < 768 ? '90px' : '90px',
-                        height: window.innerWidth < 768 ? '40px' : '50px',
-                        maxWidth: '100%',
+            isAuthenticated() ? (
+              <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
+                <PolotnoContainer className="polotno-app-container">
+                  <SidePanelWrap>
+                    <SidePanel store={store} sections={DEFAULT_SECTIONS} />
+                  </SidePanelWrap>
+                  <WorkspaceWrap>
+                    <Toolbar
+                      store={store}
+                      components={{
+                        ImageRemoveBackground,
+                        TextAIWrite: AIWriteMenu,
                       }}
                     />
-                  </div>
+                    <Workspace
+                      store={store}
+                      components={{ Tooltip, TextAIWrite: AIWriteMenu }}
+                    />
+                    <ZoomButtons store={store} />
+                    <PagesTimeline store={store} />
+                  </WorkspaceWrap>
+                </PolotnoContainer>
+
+                {/* Overlay for the logo */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: window.innerWidth < 768 ? '45px' : '-7px',
+                    right: window.innerWidth < 768 ? '-5px' : '0px',
+                    left: window.innerWidth < 768 ? 'auto' : 'unset',
+                    backgroundColor: 'transparent',
+                    zIndex: 1000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '10px',
+                  }}
+                >
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{
+                      width: window.innerWidth < 768 ? '90px' : '90px',
+                      height: window.innerWidth < 768 ? '40px' : '50px',
+                      maxWidth: '100%',
+                    }}
+                  />
                 </div>
-              }
-            />
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
           }
+        />
+
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
+        {/* Signup Route */}
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Default Route */}
+        <Route
+          path="/"
+          element={<Navigate to={isAuthenticated() ? '/studio' : '/login'} />}
         />
       </Routes>
 
       {/* Confirmation Dialog */}
-      <Dialog isOpen={isDialogOpen} onClose={handleCancel} title="Clear Canvas?">
-        <div className="bp3-dialog-body">Do you want to clear the current canvas and load the new image?</div>
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title="Clear Canvas?"
+      >
+        <div className="bp3-dialog-body">
+          Do you want to clear the current canvas and load the new image?
+        </div>
         <div className="bp3-dialog-footer">
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button intent="primary" onClick={handleConfirm}>Confirm</Button>
+          <Button intent="primary" onClick={handleConfirm}>
+            Confirm
+          </Button>
         </div>
       </Dialog>
 
