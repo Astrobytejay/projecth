@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { supabase } from './supabaseClient'; // Correct relative path inside src
 
+
 const ChatPage = () => {
   const [prompt, setPrompt] = useState('');
   const [generatedImages, setGeneratedImages] = useState([]);
