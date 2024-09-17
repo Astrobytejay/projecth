@@ -201,7 +201,7 @@ const App = observer(({ store }) => {
         <Route path="/signup" element={<Signup />} />
 
         {/* Default Route: Redirect to login page */}
-        <Route path="/" element={<Navigate to={isAuthenticated() ? '/chat' : '/login'} />} />
+        <Route path="/" element={<Navigate to="/login" />} />
 
         {/* Protected Chat Route */}
         <Route path="/chat" element={<ProtectedRoute element={<ChatPage />} />} />
