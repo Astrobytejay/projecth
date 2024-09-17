@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button, Dialog } from '@blueprintjs/core'; // Import Dialog and Button for modal
 import { Spinner } from '@blueprintjs/core';
-import { Routes, Route, Navigate } from 'react-router-dom'; // Import Routes, Route, Navigate for navigation
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'; // Import Routes, Route, Navigate for navigation
 
 // Importing logo from the correct path
 import logo from './assets/SI.png';  // <-- Correct path to the logo
@@ -45,6 +45,19 @@ setTranslations(en);
 // Helper function to check if the user is authenticated
 const isAuthenticated = () => {
   return localStorage.getItem('session') !== null;
+};
+
+// Redirect Component to Handle Route Protection
+const ProtectedRoute = ({ element }) => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate('/login');
+    }
+  }, [navigate]);
+  
+  return isAuthenticated() ? element : null;
 };
 
 const isStandalone = () => {
@@ -191,67 +204,64 @@ const App = observer(({ store }) => {
         <Route path="/" element={<Navigate to={isAuthenticated() ? '/chat' : '/login'} />} />
 
         {/* Protected Chat Route */}
-        <Route
-          path="/chat"
-          element={isAuthenticated() ? <ChatPage /> : <Navigate to="/login" />}
-        />
+        <Route path="/chat" element={<ProtectedRoute element={<ChatPage />} />} />
 
         {/* Protected Main Route */}
         <Route
           path="/main"
           element={
-            isAuthenticated() ? (
-              <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
-                <PolotnoContainer className="polotno-app-container">
-                  <SidePanelWrap>
-                    <SidePanel store={store} sections={DEFAULT_SECTIONS} />
-                  </SidePanelWrap>
-                  <WorkspaceWrap>
-                    <Toolbar
-                      store={store}
-                      components={{
-                        ImageRemoveBackground,
-                        TextAIWrite: AIWriteMenu,
+            <ProtectedRoute
+              element={
+                <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
+                  <PolotnoContainer className="polotno-app-container">
+                    <SidePanelWrap>
+                      <SidePanel store={store} sections={DEFAULT_SECTIONS} />
+                    </SidePanelWrap>
+                    <WorkspaceWrap>
+                      <Toolbar
+                        store={store}
+                        components={{
+                          ImageRemoveBackground,
+                          TextAIWrite: AIWriteMenu,
+                        }}
+                      />
+                      <Workspace
+                        store={store}
+                        components={{ Tooltip, TextAIWrite: AIWriteMenu }}
+                      />
+                      <ZoomButtons store={store} />
+                      <PagesTimeline store={store} />
+                    </WorkspaceWrap>
+                  </PolotnoContainer>
+
+                  {/* Overlay for the logo */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: window.innerWidth < 768 ? '45px' : '-7px',
+                      right: window.innerWidth < 768 ? '-5px' : '0px',
+                      left: window.innerWidth < 768 ? 'auto' : 'unset',
+                      backgroundColor: 'transparent',
+                      zIndex: 1000,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '10px',
+                    }}
+                  >
+                    <img
+                      src={logo}
+                      alt="Logo"
+                      style={{
+                        width: window.innerWidth < 768 ? '90px' : '90px',
+                        height: window.innerWidth < 768 ? '40px' : '50px',
+                        maxWidth: '100%',
                       }}
                     />
-                    <Workspace
-                      store={store}
-                      components={{ Tooltip, TextAIWrite: AIWriteMenu }}
-                    />
-                    <ZoomButtons store={store} />
-                    <PagesTimeline store={store} />
-                  </WorkspaceWrap>
-                </PolotnoContainer>
-
-                {/* Overlay for the logo */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: window.innerWidth < 768 ? '45px' : '-7px',
-                    right: window.innerWidth < 768 ? '-5px' : '0px',
-                    left: window.innerWidth < 768 ? 'auto' : 'unset',
-                    backgroundColor: 'transparent',
-                    zIndex: 1000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '10px',
-                  }}
-                >
-                  <img
-                    src={logo}
-                    alt="Logo"
-                    style={{
-                      width: window.innerWidth < 768 ? '90px' : '90px',
-                      height: window.innerWidth < 768 ? '40px' : '50px',
-                      maxWidth: '100%',
-                    }}
-                  />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <Navigate to="/login" />
-            )
+              }
+            />
           }
         />
       </Routes>
