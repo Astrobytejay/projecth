@@ -1,10 +1,15 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const session = localStorage.getItem('session');
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  // If session does not exist, redirect to login
+  if (!session) {
+    return <Navigate to="/login" />;
+  }
+
+  // Otherwise, render the children components (protected content)
+  return children;
 };
 
 export default ProtectedRoute;
