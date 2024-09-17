@@ -1,9 +1,9 @@
 // api/segmentImage.js
-import axios from 'axios';
+const axios = require('axios');
 
-const HUGGING_FACE_API_TOKEN = process.env.HUGGING_FACE_API_TOKEN; // Use environment variable
+const HUGGING_FACE_API_TOKEN = process.env.HUGGING_FACE_API_TOKEN;
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
       const { image } = req.body;
@@ -33,4 +33,4 @@ export default async function handler(req, res) {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};
