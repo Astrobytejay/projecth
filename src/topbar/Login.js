@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import loginBackground from '../assets/dsd.webp';  // Correct image path
 import './login.css';  // Import the CSS file
-import { supabase } from '../supabaseClient'; // Ensure this points to your Supabase client
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,21 +11,13 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
 
-      if (error) {
-        console.error('Login error:', error.message);
-        alert('Login failed: ' + error.message);
-      } else {
-        localStorage.setItem('session', JSON.stringify(data.session));
-        navigate('/chat');  // Redirect to ChatPage after successful login
-      }
-    } catch (error) {
-      console.error('Login error:', error);
+    // Mock login for now
+    if (email === 'test@user.com' && password === 'password123') {
+      localStorage.setItem('isAuthenticated', 'true');  // Save auth state to local storage
+      navigate('/chat');  // Redirect to ChatPage
+    } else {
+      alert('Invalid login credentials. Use "test@user.com" and "password123"');
     }
   };
 

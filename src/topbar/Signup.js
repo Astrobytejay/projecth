@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import signupBackground from '../assets/trr.webp';  // Correct image path
 import './signup.css';  // Import the CSS file
-import { supabase } from '../supabaseClient'; // Supabase client
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -10,35 +9,23 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [showPassword, setShowPassword] = useState(false);  // Toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            username: username,
-            full_name: fullName,
-            phone_number: phoneNumber,  // Optional phone number field
-          },
-        },
-      });
 
-      if (error) {
-        console.error('Signup error:', error.message);
-        alert('Signup failed: ' + error.message);
-      } else {
-        alert('Signup successful! Please log in.');
-        navigate('/login');  // Redirect to login after successful signup
-      }
-    } catch (error) {
-      console.error('Signup error:', error);
-      alert('An error occurred during signup');
-    }
+    // Mock signup - save to localStorage as a simple form of registration
+    localStorage.setItem('signupData', JSON.stringify({
+      email,
+      username,
+      fullName,
+      phoneNumber,
+      password
+    }));
+
+    alert('Signup successful! Please log in.');
+    navigate('/login');  // Redirect to login
   };
 
   return (

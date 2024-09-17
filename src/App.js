@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { Button, Dialog } from '@blueprintjs/core'; // Import Dialog and Button for modal
 import { Spinner } from '@blueprintjs/core';
 import { Routes, Route, Navigate } from 'react-router-dom'; // Import Routes, Route, Navigate for navigation
-import { supabase } from './supabaseClient'; // Import Supabase client for authentication
 
 // Importing logo from the correct path
 import logo from './assets/SI.png';  // <-- Correct path to the logo
@@ -42,36 +41,6 @@ import ChatPage from './ChatPage';  // Import ChatPage component
 
 // Load default translations
 setTranslations(en);
-
-// Helper function for checking authentication
-const ProtectedRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Error checking session:', error);
-        } else {
-          console.log('Session:', session); // Log session for debugging
-          setIsAuthenticated(!!session);
-        }
-      } catch (err) {
-        console.error('Failed to check session:', err);
-      }
-      setLoading(false);
-    };
-    checkSession();
-  }, []);
-
-  if (loading) {
-    return <Spinner />; // Show loading while checking authentication
-  }
-
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
 
 const isStandalone = () => {
   return (
@@ -216,9 +185,9 @@ const App = observer(({ store }) => {
         {/* Default Route: Redirect to login page */}
         <Route path="/" element={<Navigate to="/login" />} />
 
-        {/* Protected Routes: Accessible only when logged in */}
-        <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-        <Route path="/main" element={<ProtectedRoute>
+        {/* Unprotected Chat Route */}
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/main" element={
           <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
             <PolotnoContainer className="polotno-app-container">
               <SidePanelWrap>
@@ -267,7 +236,7 @@ const App = observer(({ store }) => {
               />
             </div>
           </div>
-        </ProtectedRoute>} />
+        } />
       </Routes>
 
       {/* Confirmation Dialog */}
