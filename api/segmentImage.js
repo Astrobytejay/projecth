@@ -8,6 +8,7 @@ module.exports = async (req, res) => {
     try {
       const { image } = req.body;
 
+      // Ensure the model name and task are correctly defined
       const response = await axios({
         method: 'post',
         url: 'https://api-inference.huggingface.co/models/finegrain/finegrain-box-segmenter',
@@ -16,8 +17,7 @@ module.exports = async (req, res) => {
           'Content-Type': 'application/json',
         },
         data: {
-          inputs: image,
-          options: { wait_for_model: true },
+          inputs: image, // Send the base64 image
         },
       });
 
