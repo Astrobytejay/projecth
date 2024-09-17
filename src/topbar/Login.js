@@ -35,7 +35,7 @@ const Login = () => {
     if (user) {
       // Save session data (e.g., username) to localStorage for session management
       localStorage.setItem('session', JSON.stringify({ email: user.email, name: user.name }));
-      navigate('/chat');  // Redirect to ChatPage after successful login
+      navigate('/chatpage');  // Redirect to ChatPage after successful login
     } else {
       setError('Invalid login credentials. Please try again.');
     }
