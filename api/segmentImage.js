@@ -1,7 +1,7 @@
 import Replicate from "replicate";
 
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN, // Make sure your API key is set in Vercel environment
+  auth: process.env.REPLICATE_API_TOKEN, // Add your Replicate token in Vercel
 });
 
 export default async function handler(req, res) {

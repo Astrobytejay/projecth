@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Button, Spinner } from "@blueprintjs/core"; // Import the Spinner for loading state
+import { Button, Spinner } from "@blueprintjs/core";
 
 const ImageRemoveBackground = ({ store }) => {
   const [loading, setLoading] = useState(false);
