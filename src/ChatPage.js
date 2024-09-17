@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { supabase } from './supabaseClient';  // Make sure this path is correct
 
 const ChatPage = () => {
   const [prompt, setPrompt] = useState('');
@@ -22,21 +21,17 @@ const ChatPage = () => {
   const bottomRef = useRef(null);
   const navigate = useNavigate();
 
-  // Ensure the user is authenticated; if not, redirect to login
+  // Simple authentication check using localStorage
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error || !session) {
-        navigate('/login');  // Redirect to login if not authenticated
-      }
-    };
-    checkAuth();
+    const session = localStorage.getItem('session');
+    if (!session) {
+      navigate('/login'); // Redirect to login if not authenticated
+    }
   }, [navigate]);
 
   // Logout functionality
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    localStorage.removeItem('session');  // Clear local storage session
+  const handleLogout = () => {
+    localStorage.removeItem('session');  // Clear session from local storage
     navigate('/login');  // Redirect to login page after logout
   };
 
