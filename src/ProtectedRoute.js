@@ -1,4 +1,3 @@
-// src/ProtectedRoute.js
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient'; // Import the Supabase client
@@ -9,13 +8,20 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('Error fetching session:', error);
+      }
+
+      console.log('Session:', session); // Debugging session information
 
       if (session) {
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }
+
       setLoading(false);
     };
 
@@ -23,7 +29,7 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return null; // Optional: Return a loading spinner if needed
+    return <div>Loading...</div>; // Add a simple loading indicator
   }
 
   return isAuthenticated ? children : <Navigate to="/login" />;

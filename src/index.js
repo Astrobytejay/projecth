@@ -3,45 +3,35 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // Make sure Router is properly imported
 
 import { createStore } from 'polotno/model/store';
-import { Auth0Provider } from '@auth0/auth0-react';
-import { createProject, ProjectContext } from './project';
+import { createProject, ProjectContext } from './project';  // Import Project Context and createProject function
 import App from './App';
 import ChatPage from './ChatPage';
 import EditPage from './EditPage';  // Ensure EditPage is properly imported
 import Login from './topbar/Login';  // Import Login component
 import Signup from './topbar/Signup';  // Import Signup component
 
-import './index.css';
-import './logger';
-import { ErrorBoundary } from 'react-error-boundary';
+import './index.css';  // CSS file for global styles
+import './logger';     // Logger file if needed for logging
+import { ErrorBoundary } from 'react-error-boundary';  // Error boundary to handle application errors
 
-// Create Polotno store with your new key and watermark disabled
+// Create Polotno store with your Polotno key and disable the watermark
 const store = createStore({
-  key: 'ajmZpbd8NK3uZ4-_5JNO',  // Your new Polotno key
+  key: 'ajmZpbd8NK3uZ4-_5JNO',  // Your Polotno key
   showCredit: false             // Disable the "Powered by Polotno" watermark
 });
 
-// Ensure a page is added
+// Ensure at least one page exists in the store
 if (store.pages.length === 0) {
   store.addPage();
 }
 
-window.store = store;
+window.store = store;  // Expose store to window for debugging
 
-// Create project context
+// Create project context using Polotno store
 const project = createProject({ store });
-window.project = project;
+window.project = project;  // Expose project to window for debugging
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-// Auth0 variables
-const AUTH_DOMAIN = 'polotno-studio.eu.auth0.com';
-const PRODUCTION_ID = process.env.REACT_APP_AUTH0_ID;
-const LOCAL_ID = process.env.REACT_APP_AUTH0_ID;
-
-const isLocalhost = window.location.href.indexOf('localhost') >= 0;
-const ID = isLocalhost ? LOCAL_ID : PRODUCTION_ID;
-const REDIRECT = isLocalhost ? 'http://localhost:3000' : 'https://studio.polotno.com';
 
 // Fallback component for error boundary
 function Fallback({ error, resetErrorBoundary }) {
@@ -63,29 +53,27 @@ function Fallback({ error, resetErrorBoundary }) {
   );
 }
 
-// Render the app with routing and Auth0Provider
+// Render the app with routing
 root.render(
   <ErrorBoundary
-    FallbackComponent={Fallback}
+    FallbackComponent={Fallback}   // Handle errors with the fallback component
     onReset={(details) => {}}
     onError={(e) => {
       if (window.Sentry) {
-        window.Sentry.captureException(e);
+        window.Sentry.captureException(e);  // Optionally capture errors with Sentry
       }
     }}
   >
     <ProjectContext.Provider value={project}>
-      <Auth0Provider domain={AUTH_DOMAIN} clientId={ID} redirectUri={REDIRECT}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<ChatPage />} />
-            <Route path="/edit-image" element={<EditPage />} />
-            <Route path="/studio" element={<App store={store} />} />
-            <Route path="/login" element={<Login />} />  {/* Add login route */}
-            <Route path="/signup" element={<Signup />} />  {/* Add signup route */}
-          </Routes>
-        </Router>
-      </Auth0Provider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<ChatPage />} />   {/* Default route: ChatPage */}
+          <Route path="/edit-image" element={<EditPage />} />  {/* Route for EditPage */}
+          <Route path="/studio" element={<App store={store} />} />  {/* Route for the main app */}
+          <Route path="/login" element={<Login />} />  {/* Route for login */}
+          <Route path="/signup" element={<Signup />} />  {/* Route for signup */}
+        </Routes>
+      </Router>
     </ProjectContext.Provider>
   </ErrorBoundary>
 );
