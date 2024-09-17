@@ -83,8 +83,8 @@ root.render(
       <Auth0Provider domain={AUTH_DOMAIN} clientId={ID} redirectUri={REDIRECT}>
         <Router>
           <Routes>
-            {/* Default route redirects to login */}
-            <Route path="/" element={isAuthenticated() ? <Navigate to="/chat" /> : <Navigate to="/login" />} />
+            {/* Default route redirects to login if not authenticated */}
+            <Route path="/" element={<Navigate to={isAuthenticated() ? "/chat" : "/login"} />} />
 
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
