@@ -12,9 +12,9 @@ const TextToImagePage = () => {
     setLoading(true);
     try {
       // Send the prompt to the backend API to generate the image
-      const response = await axios.post('http://localhost:8000/generate-image', { prompt });
+      const response = await axios.post('https://www.svatai.com/generate-image', { prompt });
       const imagePath = response.data.image_path.split('/').pop();
-      setImageUrl(`http://localhost:8000/images/${imagePath}`);
+      setImageUrl(`https://www.svatai.com/images/${imagePath}`);
     } catch (error) {
       console.error('Error generating image:', error);
     }
