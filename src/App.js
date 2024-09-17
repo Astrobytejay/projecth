@@ -39,85 +39,8 @@ import Login from './topbar/Login';  // Import Login component from topbar
 import Signup from './topbar/Signup';  // Import Signup component from topbar
 import ChatPage from './ChatPage';  // Import ChatPage component
 
-import axios from 'axios'; // Import axios for API requests
-
 // Load default translations
 setTranslations(en);
-
-// Define the new ImgCutter section
-const ImgCutterPanel = observer(({ store }) => {
-  const [prompt, setPrompt] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Function to handle object cutting with FineGrain API
-  const handleCut = async () => {
-    if (!store.activePage) return;
-    const imageElement = store.activePage?.selectedElements[0]; // Get the currently selected image on the canvas
-
-    if (imageElement && imageElement.type === 'image') {
-      setIsLoading(true);
-
-      try {
-        // API call to FineGrain Object Cutter
-        const response = await axios.post(
-          'https://api-inference.huggingface.co/models/finegrain/finegrain-object-cutter',
-          {
-            image: imageElement.src, // Send the image source to the API
-            prompt, // User's prompt for what to cut
-          },
-          {
-            headers: {
-              'Authorization': `Bearer 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`, // Hugging Face API token
-            },
-          }
-        );
-
-        const processedImageUrl = response.data.output; // Get the processed image URL
-
-        // Replace the existing image with the processed one
-        store.activePage.updateElement(imageElement.id, {
-          src: processedImageUrl,
-        });
-      } catch (error) {
-        console.error('Error cutting object:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  return (
-    <div style={{ padding: '10px' }}>
-      <input
-        type="text"
-        placeholder="Enter a prompt to cut (e.g., 'cut the person')"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        disabled={isLoading}
-        style={{ marginBottom: '10px', width: '100%', padding: '8px' }}
-      />
-      <Button
-        onClick={handleCut}
-        intent="primary"
-        loading={isLoading}
-        text="Cut Object"
-        disabled={!store.activePage?.selectedElements?.length || !prompt}
-        style={{ width: '100%' }}
-      />
-    </div>
-  );
-});
-
-// Define the new ImgCutterSection
-export const ImgCutterSection = {
-  name: 'imgCutter',
-  Tab: observer((props) => (
-    <SectionTab name="Img Cutter" {...props}>
-      <FaCut />
-    </SectionTab>
-  )),
-  Panel: ImgCutterPanel,
-};
 
 // Helper function to check if the user is authenticated
 const isAuthenticated = () => {
@@ -274,7 +197,7 @@ const App = observer(({ store }) => {
                 <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
                   <PolotnoContainer className="polotno-app-container">
                     <SidePanelWrap>
-                      <SidePanel store={store} sections={[...DEFAULT_SECTIONS, ImgCutterSection]} />
+                      <SidePanel store={store} sections={DEFAULT_SECTIONS} />
                     </SidePanelWrap>
                     <WorkspaceWrap>
                       <Toolbar
