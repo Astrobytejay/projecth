@@ -7,17 +7,37 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  // Hardcoded user credentials
+  const users = [
+    {
+      email: 'info@svatai.com',
+      password: 'qualiTyB4$$',
+      name: 'Admin',
+    },
+    {
+      email: 'demo@svatai.com',
+      password: 'Password2803$',
+      name: 'Demo',
+    },
+  ];
 
-    // Mock login for now
-    if (email === 'test@user.com' && password === 'password123') {
-      localStorage.setItem('isAuthenticated', 'true');  // Save auth state to local storage
-      navigate('/chat');  // Redirect to ChatPage
+  const handleLogin = (e) => {
+    e.preventDefault();
+    
+    // Check if the entered credentials match the hardcoded users
+    const user = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (user) {
+      // Save session data (e.g., username) to localStorage for session management
+      localStorage.setItem('session', JSON.stringify({ email: user.email, name: user.name }));
+      navigate('/chat');  // Redirect to ChatPage after successful login
     } else {
-      alert('Invalid login credentials. Use "test@user.com" and "password123"');
+      setError('Invalid login credentials. Please try again.');
     }
   };
 
@@ -59,6 +79,9 @@ const Login = () => {
               </span>
             </div>
           </div>
+          {/* Error message if login fails */}
+          {error && <p className="error-message">{error}</p>}
+          
           <button type="submit" className="login-button">
             Login
           </button>
