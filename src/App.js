@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button, Dialog } from '@blueprintjs/core'; // Import Dialog and Button for modal
 import { Spinner } from '@blueprintjs/core';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'; // Import Routes, Route, Navigate for navigation
+import { Routes, Route } from 'react-router-dom'; // Import Routes and Route for navigation
 
 // Importing logo from the correct path
 import logo from './assets/SI.png';  // <-- Correct path to the logo
@@ -37,28 +37,9 @@ import ptBr from './translations/pt-br';
 import Topbar from './topbar/topbar';
 import Login from './topbar/Login';  // Import Login component from topbar
 import Signup from './topbar/Signup';  // Import Signup component from topbar
-import ChatPage from './ChatPage';  // Import ChatPage component
 
 // Load default translations
 setTranslations(en);
-
-// Helper function to check if the user is authenticated
-const isAuthenticated = () => {
-  return localStorage.getItem('session') !== null;
-};
-
-// Redirect Component to Handle Route Protection
-const ProtectedRoute = ({ element }) => {
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/login');
-    }
-  }, [navigate]);
-  
-  return isAuthenticated() ? element : null;
-};
 
 const isStandalone = () => {
   return (
@@ -73,7 +54,8 @@ const getOffsetHeight = () => {
   if (isStandalone()) {
     const safeAreaInsetBottomString = getComputedStyle(
       document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)');
+    ).getPropertyValue('env(safe-area-inset-bottom)'
+    );
     if (safeAreaInsetBottomString) {
       safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
     }
@@ -85,6 +67,7 @@ const getOffsetHeight = () => {
       }
     }
   }
+
   return window.innerHeight - safeAreaInsetBottom;
 };
 
@@ -117,8 +100,11 @@ const App = observer(({ store }) => {
     clearWorkspace(); // Clear the canvas before adding the new image
 
     if (store.activePage) {
+      // Set image size to 1024x1024
       const imageWidth = 1024;
       const imageHeight = 1024;
+
+      // Add the new image to the center of the canvas
       store.activePage.addElement({
         type: 'image',
         src: imageUrl, // Ensure image loaded from Replicate API
@@ -196,82 +182,76 @@ const App = observer(({ store }) => {
     >
       <Topbar store={store} />
       <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} /> {/* Add login route */}
+        <Route path="/signup" element={<Signup />} /> {/* Add signup route */}
+        <Route path="/" element={
+          <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
+            <PolotnoContainer className="polotno-app-container">
+              <SidePanelWrap>
+                <SidePanel store={store} sections={DEFAULT_SECTIONS} />
+              </SidePanelWrap>
+              <WorkspaceWrap>
+                <Toolbar
+                  store={store}
+                  components={{
+                    ImageRemoveBackground,
+                    TextAIWrite: AIWriteMenu,
+                  }}
+                />
+                <Workspace
+                  store={store}
+                  components={{ Tooltip, TextAIWrite: AIWriteMenu }}
+                />
+                <ZoomButtons store={store} />
+                <PagesTimeline store={store} />
+              </WorkspaceWrap>
+            </PolotnoContainer>
 
-        {/* Default Route: Redirect to login page */}
-        <Route path="/" element={<Navigate to="/login" />} />
+            {/* Overlay for the logo */}
+            {/* Overlay for the logo */}
+<div
+  style={{
+    position: 'absolute',
+    bottom: window.innerWidth < 768 ? '45px' : '-7px',  // For mobile: move up 20px, for desktop: bottom aligned
+    right: window.innerWidth < 768 ? '-5px' : '0px',   // For mobile: move right slightly, for desktop: right aligned
+    left: window.innerWidth < 768 ? 'auto' : 'unset', // Unset left positioning if on desktop, auto for mobile
+    backgroundColor: 'transparent',
+    zIndex: 1000,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '10px',
+  }}
+>
+  <img
+    src={logo}
+    alt="Logo"
+    style={{
+      width: window.innerWidth < 768 ? '90px' : '90px',  // Adjust width for mobile and desktop
+      height: window.innerWidth < 768 ? '40px' : '50px', // Adjust height for desktop, auto on mobile for aspect ratio
+      maxWidth: '100%',
+    }}
+  />
+</div>
 
-        {/* Protected Chat Route */}
-        <Route path="/chat" element={<ProtectedRoute element={<ChatPage />} />} />
-
-        {/* Protected Main Route */}
-        <Route
-          path="/main"
-          element={
-            <ProtectedRoute
-              element={
-                <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
-                  <PolotnoContainer className="polotno-app-container">
-                    <SidePanelWrap>
-                      <SidePanel store={store} sections={DEFAULT_SECTIONS} />
-                    </SidePanelWrap>
-                    <WorkspaceWrap>
-                      <Toolbar
-                        store={store}
-                        components={{
-                          ImageRemoveBackground,
-                          TextAIWrite: AIWriteMenu,
-                        }}
-                      />
-                      <Workspace
-                        store={store}
-                        components={{ Tooltip, TextAIWrite: AIWriteMenu }}
-                      />
-                      <ZoomButtons store={store} />
-                      <PagesTimeline store={store} />
-                    </WorkspaceWrap>
-                  </PolotnoContainer>
-
-                  {/* Overlay for the logo */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: window.innerWidth < 768 ? '45px' : '-7px',
-                      right: window.innerWidth < 768 ? '-5px' : '0px',
-                      left: window.innerWidth < 768 ? 'auto' : 'unset',
-                      backgroundColor: 'transparent',
-                      zIndex: 1000,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '10px',
-                    }}
-                  >
-                    <img
-                      src={logo}
-                      alt="Logo"
-                      style={{
-                        width: window.innerWidth < 768 ? '90px' : '90px',
-                        height: window.innerWidth < 768 ? '40px' : '50px',
-                        maxWidth: '100%',
-                      }}
-                    />
-                  </div>
-                </div>
-              }
-            />
-          }
-        />
+          </div>
+        }/>
       </Routes>
 
       {/* Confirmation Dialog */}
-      <Dialog isOpen={isDialogOpen} onClose={handleCancel} title="Clear Canvas?">
-        <div className="bp3-dialog-body">Do you want to clear the current canvas and load the new image?</div>
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title="Clear Canvas?"
+      >
+        <div className="bp3-dialog-body">
+          Do you want to clear the current canvas and load the new image?
+        </div>
         <div className="bp3-dialog-footer">
           <Button onClick={handleCancel}>Cancel</Button>
-          <Button intent="primary" onClick={handleConfirm}>Confirm</Button>
+          <Button intent="primary" onClick={handleConfirm}>
+            Confirm
+          </Button>
         </div>
       </Dialog>
 
