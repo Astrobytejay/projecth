@@ -42,6 +42,11 @@ import ChatPage from './ChatPage';  // Import ChatPage component
 // Load default translations
 setTranslations(en);
 
+// Helper function to check if the user is authenticated
+const isAuthenticated = () => {
+  return localStorage.getItem('session') !== null;
+};
+
 const isStandalone = () => {
   return (
     window.matchMedia('(display-mode: standalone)').matches ||
@@ -183,60 +188,72 @@ const App = observer(({ store }) => {
         <Route path="/signup" element={<Signup />} />
 
         {/* Default Route: Redirect to login page */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to={isAuthenticated() ? '/chat' : '/login'} />} />
 
-        {/* Unprotected Chat Route */}
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="/main" element={
-          <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
-            <PolotnoContainer className="polotno-app-container">
-              <SidePanelWrap>
-                <SidePanel store={store} sections={DEFAULT_SECTIONS} />
-              </SidePanelWrap>
-              <WorkspaceWrap>
-                <Toolbar
-                  store={store}
-                  components={{
-                    ImageRemoveBackground,
-                    TextAIWrite: AIWriteMenu,
+        {/* Protected Chat Route */}
+        <Route
+          path="/chat"
+          element={isAuthenticated() ? <ChatPage /> : <Navigate to="/login" />}
+        />
+
+        {/* Protected Main Route */}
+        <Route
+          path="/main"
+          element={
+            isAuthenticated() ? (
+              <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
+                <PolotnoContainer className="polotno-app-container">
+                  <SidePanelWrap>
+                    <SidePanel store={store} sections={DEFAULT_SECTIONS} />
+                  </SidePanelWrap>
+                  <WorkspaceWrap>
+                    <Toolbar
+                      store={store}
+                      components={{
+                        ImageRemoveBackground,
+                        TextAIWrite: AIWriteMenu,
+                      }}
+                    />
+                    <Workspace
+                      store={store}
+                      components={{ Tooltip, TextAIWrite: AIWriteMenu }}
+                    />
+                    <ZoomButtons store={store} />
+                    <PagesTimeline store={store} />
+                  </WorkspaceWrap>
+                </PolotnoContainer>
+
+                {/* Overlay for the logo */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: window.innerWidth < 768 ? '45px' : '-7px',
+                    right: window.innerWidth < 768 ? '-5px' : '0px',
+                    left: window.innerWidth < 768 ? 'auto' : 'unset',
+                    backgroundColor: 'transparent',
+                    zIndex: 1000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '10px',
                   }}
-                />
-                <Workspace
-                  store={store}
-                  components={{ Tooltip, TextAIWrite: AIWriteMenu }}
-                />
-                <ZoomButtons store={store} />
-                <PagesTimeline store={store} />
-              </WorkspaceWrap>
-            </PolotnoContainer>
-
-            {/* Overlay for the logo */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: window.innerWidth < 768 ? '45px' : '-7px',
-                right: window.innerWidth < 768 ? '-5px' : '0px',
-                left: window.innerWidth < 768 ? 'auto' : 'unset',
-                backgroundColor: 'transparent',
-                zIndex: 1000,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '10px',
-              }}
-            >
-              <img
-                src={logo}
-                alt="Logo"
-                style={{
-                  width: window.innerWidth < 768 ? '90px' : '90px',
-                  height: window.innerWidth < 768 ? '40px' : '50px',
-                  maxWidth: '100%',
-                }}
-              />
-            </div>
-          </div>
-        } />
+                >
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{
+                      width: window.innerWidth < 768 ? '90px' : '90px',
+                      height: window.innerWidth < 768 ? '40px' : '50px',
+                      maxWidth: '100%',
+                    }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
       </Routes>
 
       {/* Confirmation Dialog */}
