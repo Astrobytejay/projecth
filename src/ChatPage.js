@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
+import { supabase } from '../supabaseClient'; // Ensure Supabase is imported correctly
 
 const ChatPage = () => {
   const [prompt, setPrompt] = useState('');
@@ -20,6 +21,24 @@ const ChatPage = () => {
   const themePickerRef = useRef(null);
   const bottomRef = useRef(null);
   const navigate = useNavigate();
+
+  // Ensure the user is authenticated; if not, redirect to login
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login'); // Redirect to login if not authenticated
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
+  // Logout functionality
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem('session'); // Clear local storage session
+    navigate('/login'); // Redirect to login page after logout
+  };
 
   // Load theme from local storage on component mount
   useEffect(() => {
@@ -90,7 +109,7 @@ const ChatPage = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt }),
         }
-      );      
+      );
 
       if (!response.ok) {
         throw new Error('Error generating image');
@@ -321,7 +340,9 @@ const ChatPage = () => {
             <div style={styles.avatarOptions}>
               <button style={styles.avatarButton}>Profile</button>
               <button style={styles.avatarButton}>Tokens</button>
-              <button style={styles.avatarButton}>Log Out</button>
+              <button style={styles.avatarButton} onClick={handleLogout}>
+                Log Out
+              </button>
               <button
                 style={styles.avatarButton}
                 onClick={() => setShowThemePicker(!showThemePicker)}
