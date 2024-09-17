@@ -25,7 +25,7 @@ import { MyDesignsSection } from './sections/my-designs-section';
 
 import { AIWriteMenu } from './ai-text';
 import { useProject } from './project';
-import { ImageRemoveBackground } from './background-remover';
+import { ImageRemoveBackground } from './components/ImageRemoveBackground'; // Ensure correct path
 
 import fr from './translations/fr';
 import en from './translations/en';
@@ -58,7 +58,8 @@ const getOffsetHeight = () => {
   if (isStandalone()) {
     const safeAreaInsetBottomString = getComputedStyle(
       document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)');
+    ).getPropertyValue('env(safe-area-inset-bottom)'
+    );
     if (safeAreaInsetBottomString) {
       safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
     }
@@ -181,7 +182,10 @@ const App = observer(({ store }) => {
                 ImageRemoveBackground,
                 TextAIWrite: AIWriteMenu,
               }}
-            />
+            >
+              {/* Add the ImageRemoveBackground button to the toolbar */}
+              <ImageRemoveBackground store={store} />
+            </Toolbar>
             <Workspace
               store={store}
               components={{ Tooltip, TextAIWrite: AIWriteMenu }}
