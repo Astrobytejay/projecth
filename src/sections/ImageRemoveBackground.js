@@ -23,10 +23,12 @@ const ImageRemoveBackground = ({ store }) => {
         image: imageUrl,
       });
   
-      console.log(response.data); // Log the API response
+      console.log(response.data); // Log the API response to ensure you get the output URL
   
       if (response.data.output) {
-        setOutputImage(response.data.output);
+        // Set the processed image as the new source for the selected element
+        selectedElement.set({ src: response.data.output });
+        store.history.save();  // Save this change in the history for undo/redo functionality
       } else {
         alert("Failed to remove background. No output image received.");
       }
