@@ -16,6 +16,7 @@ const ChatPage = () => {
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [avatarDropdown, setAvatarDropdown] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState(null); // State for fullscreen image
   const avatarRef = useRef(null);
   const themePickerRef = useRef(null);
   const bottomRef = useRef(null);
@@ -112,9 +113,10 @@ const ChatPage = () => {
 
       const data = await response.json();
       const imageUrl = data.imageUrl;
+      const secondImageUrl = data.secondImageUrl; // Assuming a second image URL
 
-      // Add new image to the chat history
-      setGeneratedImages([...generatedImages, { prompt, imagePath: imageUrl }]);
+      // Add new images to the chat history
+      setGeneratedImages([...generatedImages, { prompt, imagePath: imageUrl }, { prompt, imagePath: secondImageUrl }]);
     } catch (error) {
       console.error('Error generating image:', error);
       alert('Error generating image');
@@ -175,6 +177,35 @@ const ChatPage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleFullscreen = (imagePath) => {
+    setFullscreenImage(imagePath);
+  };
+
+  const closeFullscreen = () => {
+    setFullscreenImage(null);
+  };
+
+  const renderFullscreenModal = () => {
+    if (!fullscreenImage) return null;
+
+    return createPortal(
+      <div style={styles.fullscreenModalBackdrop} onClick={closeFullscreen}>
+        <div style={styles.fullscreenModal}>
+          <img
+            src={fullscreenImage}
+            alt="Fullscreen"
+            style={styles.fullscreenImage}
+            onClick={(e) => e.stopPropagation()} // Prevent closing on image click
+          />
+          <button style={styles.closeButton} onClick={closeFullscreen}>
+            Close
+          </button>
+        </div>
+      </div>,
+      document.body
+    );
+  };
 
   const renderThemeModal = () => {
     return createPortal(
@@ -283,6 +314,7 @@ const ChatPage = () => {
                     src={entry.imagePath}
                     alt="Generated"
                     style={styles.generatedImage}
+                    onClick={() => handleFullscreen(entry.imagePath)} // Click to open fullscreen
                   />
                   <button
                     style={styles.editButton}
@@ -354,6 +386,9 @@ const ChatPage = () => {
         </div>
       </div>
 
+      {/* Fullscreen Image Modal */}
+      {fullscreenImage && renderFullscreenModal()}
+
       {/* Theme Picker Modal */}
       {showThemePicker && renderThemeModal()}
     </div>
@@ -407,6 +442,7 @@ const styles = {
     width: '100%',
     maxWidth: '600px',
     marginTop: '10px',
+    cursor: 'pointer', // Cursor to indicate clickable for fullscreen
   },
   editButton: {
     marginTop: '10px',
@@ -488,6 +524,36 @@ const styles = {
   fileInput: {
     display: 'block',
     marginTop: '10px',
+    cursor: 'pointer',
+  },
+  fullscreenModalBackdrop: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  fullscreenModal: {
+    position: 'relative',
+  },
+  fullscreenImage: {
+    maxWidth: '90vw',
+    maxHeight: '90vh',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    backgroundColor: 'white',
+    color: '#000',
+    padding: '10px 20px',
+    borderRadius: '20px',
+    border: 'none',
     cursor: 'pointer',
   },
   themeModalBackdrop: {
