@@ -34,6 +34,15 @@ window.project = project;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// Removed Auth0 variables and configuration
+// const AUTH_DOMAIN = 'polotno-studio.eu.auth0.com';
+// const PRODUCTION_ID = process.env.REACT_APP_AUTH0_ID;
+// const LOCAL_ID = process.env.REACT_APP_AUTH0_ID;
+
+// const isLocalhost = window.location.href.indexOf('localhost') >= 0;
+// const ID = isLocalhost ? LOCAL_ID : PRODUCTION_ID;
+// const REDIRECT = isLocalhost ? 'http://localhost:3000' : 'https://studio.polotno.com';
+
 // Fallback component for error boundary
 function Fallback({ error, resetErrorBoundary }) {
   return (
@@ -71,9 +80,10 @@ root.render(
     }}
   >
     <ProjectContext.Provider value={project}>
+      {/* Removed Auth0Provider */}
       <Router>
         <Routes>
-          {/* Default route always redirects to /login */}
+          {/* Default route redirects to login if not authenticated */}
           <Route path="/" element={<Navigate to="/login" />} />
 
           {/* Public routes */}
@@ -81,18 +91,9 @@ root.render(
           <Route path="/signup" element={<Signup />} />
 
           {/* Protected Routes (only accessible if logged in) */}
-          <Route
-            path="/chat"
-            element={isAuthenticated() ? <ChatPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/edit-image"
-            element={isAuthenticated() ? <EditPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/studio"
-            element={isAuthenticated() ? <App store={store} /> : <Navigate to="/login" />}
-          />
+          <Route path="/chat" element={isAuthenticated() ? <ChatPage /> : <Navigate to="/login" />} />
+          <Route path="/edit-image" element={isAuthenticated() ? <EditPage /> : <Navigate to="/login" />} />
+          <Route path="/studio" element={isAuthenticated() ? <App store={store} /> : <Navigate to="/login" />} />
 
           {/* Catch-all route to redirect to login if no other route matches */}
           <Route path="*" element={<Navigate to="/login" />} />
