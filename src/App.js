@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button, Dialog, Spinner } from '@blueprintjs/core'; 
-import { useLocation } from 'react-router-dom'; 
+import { useLocation, useNavigate } from 'react-router-dom'; 
 
 import logo from './assets/SI.png'; 
-
 import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from 'polotno';
 import { Toolbar } from 'polotno/toolbar/toolbar';
 import { ZoomButtons } from 'polotno/toolbar/zoom-buttons';
@@ -33,50 +32,8 @@ import ru from './translations/ru';
 import ptBr from './translations/pt-br';
 
 import Topbar from './topbar/topbar';
-import Login from './topbar/Login';  
-import Signup from './topbar/Signup';  
 
 setTranslations(en);
-
-const isAuthenticated = () => {
-  return localStorage.getItem('session') !== null;
-};
-
-const isStandalone = () => {
-  return (
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone
-  );
-};
-
-const getOffsetHeight = () => {
-  let safeAreaInsetBottom = 0;
-  if (isStandalone()) {
-    const safeAreaInsetBottomString = getComputedStyle(
-      document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)');
-    if (safeAreaInsetBottomString) {
-      safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
-    }
-    if (!safeAreaInsetBottom) {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      if (/iPhone|iPad|iPod/i.test(userAgent) && !window.MSStream) {
-        safeAreaInsetBottom = 20;
-      }
-    }
-  }
-  return window.innerHeight - safeAreaInsetBottom;
-};
-
-const useHeight = () => {
-  const [height, setHeight] = React.useState(getOffsetHeight());
-  useEffect(() => {
-    const handleResize = () => setHeight(getOffsetHeight());
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  return height;
-};
 
 const App = observer(({ store }) => {
   const project = useProject();
@@ -85,6 +42,7 @@ const App = observer(({ store }) => {
   const [newImageUrl, setNewImageUrl] = useState(null); 
 
   const location = useLocation(); 
+  const navigate = useNavigate();
 
   const clearWorkspace = () => {
     if (store.activePage) {
@@ -175,7 +133,8 @@ const App = observer(({ store }) => {
               }}
             >
               <ImageRemoveBackground store={store} />
-              {/* Add an eraser button for object removal */}
+              
+              {/* Add the eraser button to the toolbar */}
               <Button
                 icon="eraser"
                 onClick={() => navigate('/remove-object')}
