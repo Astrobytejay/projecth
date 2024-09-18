@@ -114,7 +114,7 @@ const ChatPage = () => {
       const data = await response.json();
       const imageUrl = data.imageUrl;
   
-      // Add only one image to the chat history
+      // Add the new image to the chat history (remove second image)
       setGeneratedImages([...generatedImages, { prompt, imagePath: imageUrl }]);
     } catch (error) {
       console.error('Error generating image:', error);
@@ -123,7 +123,7 @@ const ChatPage = () => {
       setLoading(false);
       setPrompt('');
     }
-  };  
+  };    
 
   const handleEditImage = (imagePath) => {
     const studioUrl = `https://www.svatai.com/studio?image=${encodeURIComponent(imagePath)}`;
