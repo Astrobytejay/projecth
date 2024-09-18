@@ -15,6 +15,7 @@ import { Tooltip } from 'polotno/canvas/tooltip';
 import { PagesTimeline } from 'polotno/pages-timeline';
 import { setTranslations } from 'polotno/config';
 
+// Custom imports for the additional sections
 import { loadFile } from './file';
 import { QrSection } from './sections/qr-section';
 import { QuotesSection } from './sections/quotes-section';
@@ -173,7 +174,18 @@ const App = observer(({ store }) => {
       <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
         <PolotnoContainer className="polotno-app-container">
           <SidePanelWrap>
-            <SidePanel store={store} sections={DEFAULT_SECTIONS} />
+            <SidePanel 
+              store={store} 
+              sections={[
+                ...DEFAULT_SECTIONS, 
+                QrSection, 
+                QuotesSection, 
+                IconsSection, 
+                ShapesSection, 
+                CustomAIImageSection, 
+                MyDesignsSection
+              ]}
+            />
           </SidePanelWrap>
           <WorkspaceWrap>
             <Toolbar

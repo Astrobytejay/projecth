@@ -240,7 +240,7 @@ export const DownloadButton = observer(({ store }) => {
                       unescape(encodeURIComponent(JSON.stringify(json)))
                     );
 
-                  downloadFile(url, 'polotno.json');
+                  downloadFile(url, 'Svatai.json');
                 } else if (type === 'gif') {
                   await store.saveAsGIF({
                     fileName: getName() + '.gif',
