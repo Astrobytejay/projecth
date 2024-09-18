@@ -15,6 +15,7 @@ import { Tooltip } from 'polotno/canvas/tooltip';
 import { PagesTimeline } from 'polotno/pages-timeline';
 import { setTranslations } from 'polotno/config';
 
+// Custom imports for the additional sections
 import { loadFile } from './file';
 import { QrSection } from './sections/qr-section';
 import { QuotesSection } from './sections/quotes-section';
@@ -26,7 +27,6 @@ import { MyDesignsSection } from './sections/my-designs-section';
 import { AIWriteMenu } from './ai-text';
 import { useProject } from './project';
 import ImageRemoveBackground from './sections/ImageRemoveBackground'; 
-import { saveAsVideo } from './video/download-video'; // Import video save function
 
 import fr from './translations/fr';
 import en from './translations/en';
