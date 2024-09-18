@@ -3,22 +3,23 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';  // Import Navigate to handle redirects
 
 import { createStore } from 'polotno/model/store';
-// Removed Auth0Provider import
 import { createProject, ProjectContext } from './project';
 import App from './App';
 import ChatPage from './ChatPage';
-import EditPage from './EditPage';  // Ensure EditPage is properly imported
-import Login from './topbar/Login';  // Import Login component
-import Signup from './topbar/Signup';  // Import Signup component
+import EditPage from './EditPage';  
+import Login from './topbar/Login';  
+import Signup from './topbar/Signup';  
 
 import './index.css';
 import './logger';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import ObjectRemovalSection from './sections/ObjectRemovalSection'; // Import ObjectRemovalSection
+
 // Create Polotno store with your new key and watermark disabled
 const store = createStore({
   key: 'ajmZpbd8NK3uZ4-_5JNO',  // Your new Polotno key
-  showCredit: false             // Disable the "Powered by Polotno" watermark
+  showCredit: false             
 });
 
 // Ensure a page is added
@@ -92,6 +93,12 @@ root.render(
           <Route
             path="/studio"
             element={isAuthenticated() ? <App store={store} /> : <Navigate to="/login" />}
+          />
+
+          {/* Add the new Object Removal section */}
+          <Route
+            path="/remove-object"
+            element={isAuthenticated() ? <ObjectRemovalSection store={store} /> : <Navigate to="/login" />}
           />
 
           {/* Catch-all route to redirect to login if no other route matches */}
