@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';  // Import Navigate to handle redirects
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 import { createStore } from 'polotno/model/store';
 import { createProject, ProjectContext } from './project';
 import App from './App';
 import ChatPage from './ChatPage';
-import EditPage from './EditPage';  
-import Login from './topbar/Login';  
-import Signup from './topbar/Signup';  
+import EditPage from './EditPage';
+import Login from './topbar/Login';
+import Signup from './topbar/Signup';
 
 import './index.css';
 import './logger';
@@ -18,8 +18,8 @@ import ObjectRemovalSection from './sections/ObjectRemovalSection'; // Import Ob
 
 // Create Polotno store with your new key and watermark disabled
 const store = createStore({
-  key: 'ajmZpbd8NK3uZ4-_5JNO',  // Your new Polotno key
-  showCredit: false             
+  key: 'ajmZpbd8NK3uZ4-_5JNO',
+  showCredit: false
 });
 
 // Ensure a page is added
