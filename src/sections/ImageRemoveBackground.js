@@ -12,20 +12,24 @@ const ImageRemoveBackground = ({ store }) => {
       alert("Please select an image element first.");
       return;
     }
-
+  
     const imageUrl = selectedElement.src;
-
+  
     try {
       setLoading(true);
-
+  
       // Send the image URL to the backend API for processing
       const response = await axios.post("/api/segmentImage", {
         image: imageUrl,
       });
-
-      // Set the output image from the API response
-      setOutputImage(response.data.output);
-
+  
+      console.log(response.data); // Log the API response
+  
+      if (response.data.output) {
+        setOutputImage(response.data.output);
+      } else {
+        alert("Failed to remove background. No output image received.");
+      }
     } catch (error) {
       console.error("Error removing background:", error);
       alert("Failed to remove background.");
