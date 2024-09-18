@@ -1,7 +1,5 @@
 {
   "functions": {
-    "api/segmentImage.js": {
-      "timeout": 60
-    }
+    "api/segmentImage.js": {}
   }
 }
