@@ -23,7 +23,7 @@ import { IconsSection } from './sections/icons-section';
 import { ShapesSection } from './sections/shapes-section';
 import { CustomAIImageSection } from './sections/stable-diffusion-section';
 import { MyDesignsSection } from './sections/my-designs-section';
-import { VideosSection } from './sections/video-section'; // Ensure this path is correct
+import { VideoSection } from './sections/video-section'; // <-- Import the VideoSection
 
 import { AIWriteMenu } from './ai-text';
 import { useProject } from './project';
