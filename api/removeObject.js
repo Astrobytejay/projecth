@@ -1,24 +1,28 @@
-// api/removeObject.js
-const Replicate = require('replicate');
+import Replicate from "replicate";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-const removeObjectFromImage = async (req, res) => {
-  const { maskUrl, imageUrl } = req.body;
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    try {
+      const { image, mask } = req.body;
 
-  try {
-    const output = await replicate.run(
-      "allenhooo/lama:cdac78a1bec5b23c07fd29692fb70baa513ea403a39e643c48ec5edadb15fe72",
-      {
-        input: { mask: maskUrl, image: imageUrl },
-      }
-    );
-    res.json({ output });
-  } catch (error) {
-    res.status(500).send({ error: 'Failed to process image' });
+      const output = await replicate.run(
+        "allenhooo/lama:cdac78a1bec5b23c07fd29692fb70baa513ea403a39e643c48ec5edadb15fe72",
+        {
+          input: { image, mask },
+        }
+      );
+
+      return res.status(200).json({ output });
+    } catch (error) {
+      console.error("Error removing object:", error);
+      return res.status(500).json({ error: "Object removal failed" });
+    }
+  } else {
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-};
-
-module.exports = { removeObjectFromImage };
+}
