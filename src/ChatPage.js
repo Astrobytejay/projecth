@@ -94,9 +94,9 @@ const ChatPage = () => {
       alert('Please enter a prompt.');
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const response = await fetch(
         'https://backendsvatai-37d34386095c.herokuapp.com/generate-image',
@@ -106,17 +106,16 @@ const ChatPage = () => {
           body: JSON.stringify({ prompt }),
         }
       );
-
+  
       if (!response.ok) {
         throw new Error('Error generating image');
       }
-
+  
       const data = await response.json();
       const imageUrl = data.imageUrl;
-      const secondImageUrl = data.secondImageUrl; // Assuming a second image URL
-
-      // Add new images to the chat history
-      setGeneratedImages([...generatedImages, { prompt, imagePath: imageUrl }, { prompt, imagePath: secondImageUrl }]);
+  
+      // Add only one image to the chat history
+      setGeneratedImages([...generatedImages, { prompt, imagePath: imageUrl }]);
     } catch (error) {
       console.error('Error generating image:', error);
       alert('Error generating image');
@@ -124,7 +123,7 @@ const ChatPage = () => {
       setLoading(false);
       setPrompt('');
     }
-  };
+  };  
 
   const handleEditImage = (imagePath) => {
     const studioUrl = `https://www.svatai.com/studio?image=${encodeURIComponent(imagePath)}`;
