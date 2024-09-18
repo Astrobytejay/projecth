@@ -197,6 +197,14 @@ const App = observer(({ store }) => {
             >
               {/* Add the ImageRemoveBackground button to the toolbar */}
               <ImageRemoveBackground store={store} />
+              
+              {/* Add an eraser button for object removal */}
+              <Button
+                icon="eraser"  // Blueprint icon for eraser
+                onClick={() => navigate('/remove-object')}  // Navigates to remove-object page
+              >
+                Remove Object
+              </Button>
             </Toolbar>
             <Workspace
               store={store}
@@ -206,7 +214,7 @@ const App = observer(({ store }) => {
             <PagesTimeline store={store} />
           </WorkspaceWrap>
         </PolotnoContainer>
-
+  
         {/* Overlay for the logo */}
         <div
           style={{
@@ -233,7 +241,7 @@ const App = observer(({ store }) => {
           />
         </div>
       </div>
-
+  
       {/* Confirmation Dialog */}
       <Dialog
         isOpen={isDialogOpen}
@@ -250,7 +258,7 @@ const App = observer(({ store }) => {
           </Button>
         </div>
       </Dialog>
-
+  
       {project.status === 'loading' && (
         <div
           style={{
@@ -277,7 +285,7 @@ const App = observer(({ store }) => {
         </div>
       )}
     </div>
-  );
+  );  
 });
 
 export default App;
