@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Dialog, Spinner } from '@blueprintjs/core'; // Combined imports
-import { useLocation } from 'react-router-dom'; // Keep useLocation for query parameters
+import { Button, Dialog, Spinner } from '@blueprintjs/core'; 
+import { useLocation } from 'react-router-dom'; 
 
-// Importing logo from the correct path
-import logo from './assets/SI.png';  // <-- Correct path to the logo
+import logo from './assets/SI.png'; 
 
 import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from 'polotno';
 import { Toolbar } from 'polotno/toolbar/toolbar';
@@ -15,7 +14,6 @@ import { Tooltip } from 'polotno/canvas/tooltip';
 import { PagesTimeline } from 'polotno/pages-timeline';
 import { setTranslations } from 'polotno/config';
 
-// Custom imports for the additional sections
 import { loadFile } from './file';
 import { QrSection } from './sections/qr-section';
 import { QuotesSection } from './sections/quotes-section';
@@ -35,13 +33,11 @@ import ru from './translations/ru';
 import ptBr from './translations/pt-br';
 
 import Topbar from './topbar/topbar';
-import Login from './topbar/Login';  // Import Login component from topbar
-import Signup from './topbar/Signup';  // Import Signup component from topbar
+import Login from './topbar/Login';  
+import Signup from './topbar/Signup';  
 
-// Load default translations
 setTranslations(en);
 
-// Helper function to check if the user is authenticated
 const isAuthenticated = () => {
   return localStorage.getItem('session') !== null;
 };
@@ -55,16 +51,13 @@ const isStandalone = () => {
 
 const getOffsetHeight = () => {
   let safeAreaInsetBottom = 0;
-
   if (isStandalone()) {
     const safeAreaInsetBottomString = getComputedStyle(
       document.documentElement
-    ).getPropertyValue('env(safe-area-inset-bottom)'
-    );
+    ).getPropertyValue('env(safe-area-inset-bottom)');
     if (safeAreaInsetBottomString) {
       safeAreaInsetBottom = parseFloat(safeAreaInsetBottomString);
     }
-
     if (!safeAreaInsetBottom) {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       if (/iPhone|iPad|iPod/i.test(userAgent) && !window.MSStream) {
@@ -72,7 +65,6 @@ const getOffsetHeight = () => {
       }
     }
   }
-
   return window.innerHeight - safeAreaInsetBottom;
 };
 
@@ -89,12 +81,11 @@ const useHeight = () => {
 const App = observer(({ store }) => {
   const project = useProject();
   const height = useHeight();
-  const [isDialogOpen, setIsDialogOpen] = useState(false); // State to manage modal visibility
-  const [newImageUrl, setNewImageUrl] = useState(null); // Store the URL of the new image to be loaded
+  const [isDialogOpen, setIsDialogOpen] = useState(false); 
+  const [newImageUrl, setNewImageUrl] = useState(null); 
 
-  const location = useLocation(); // To access query parameters
+  const location = useLocation(); 
 
-  // Clear the workspace
   const clearWorkspace = () => {
     if (store.activePage) {
       const elements = store.activePage?.elements || [];
@@ -102,19 +93,14 @@ const App = observer(({ store }) => {
     }
   };
 
-  // Function to load a new image onto the canvas
   const loadImage = (imageUrl) => {
-    clearWorkspace(); // Clear the canvas before adding the new image
-
+    clearWorkspace(); 
     if (store.activePage) {
-      // Set image size to 1024x1024
       const imageWidth = 1024;
       const imageHeight = 1024;
-
-      // Add the new image to the center of the canvas
       store.activePage.addElement({
         type: 'image',
-        src: imageUrl, // Ensure image loaded from Replicate API
+        src: imageUrl, 
         width: imageWidth,
         height: imageHeight,
         x: store.width / 2 - imageWidth / 2,
@@ -123,37 +109,31 @@ const App = observer(({ store }) => {
     }
   };
 
-  // Function to handle the user's decision from the dialog
   const handleConfirm = () => {
-    setIsDialogOpen(false); // Close the dialog
+    setIsDialogOpen(false); 
     if (newImageUrl) {
-      loadImage(newImageUrl); // Load the new image
+      loadImage(newImageUrl); 
     }
   };
 
   const handleCancel = () => {
-    setIsDialogOpen(false); // Close the dialog without loading the new image
+    setIsDialogOpen(false); 
   };
 
-  // Effect to load the image from query params when the app loads
   useEffect(() => {
     project.firstLoad();
-
     const imageUrl = new URLSearchParams(location.search).get('image');
     if (imageUrl) {
-      setNewImageUrl(imageUrl); // Store the new image URL
-      setIsDialogOpen(true); // Show the dialog asking whether to clear the canvas
+      setNewImageUrl(imageUrl); 
+      setIsDialogOpen(true); 
     }
   }, [store, project, location.search]);
 
-  // Handle file drop onto the canvas
   const handleDrop = (ev) => {
     ev.preventDefault();
-
     if (ev.dataTransfer.files.length !== ev.dataTransfer.items.length) {
       return;
     }
-
     for (let i = 0; i < ev.dataTransfer.files.length; i++) {
       loadFile(ev.dataTransfer.files[i], store);
     }
@@ -170,7 +150,6 @@ const App = observer(({ store }) => {
       onDrop={handleDrop}
     >
       <Topbar store={store} />
-      {/* Main Content */}
       <div style={{ height: 'calc(100% - 50px)', position: 'relative' }}>
         <PolotnoContainer className="polotno-app-container">
           <SidePanelWrap>
@@ -195,8 +174,14 @@ const App = observer(({ store }) => {
                 TextAIWrite: AIWriteMenu,
               }}
             >
-              {/* Add the ImageRemoveBackground button to the toolbar */}
               <ImageRemoveBackground store={store} />
+              {/* Add an eraser button for object removal */}
+              <Button
+                icon="eraser"
+                onClick={() => navigate('/remove-object')}
+              >
+                Remove Object
+              </Button>
             </Toolbar>
             <Workspace
               store={store}
@@ -207,7 +192,6 @@ const App = observer(({ store }) => {
           </WorkspaceWrap>
         </PolotnoContainer>
 
-        {/* Overlay for the logo */}
         <div
           style={{
             position: 'absolute',
@@ -234,7 +218,6 @@ const App = observer(({ store }) => {
         </div>
       </div>
 
-      {/* Confirmation Dialog */}
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
