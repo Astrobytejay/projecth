@@ -23,11 +23,10 @@ import { IconsSection } from './sections/icons-section';
 import { ShapesSection } from './sections/shapes-section';
 import { CustomAIImageSection } from './sections/stable-diffusion-section';
 import { MyDesignsSection } from './sections/my-designs-section';
-import { VideoSection } from './sections/video-section'; // <-- Import the VideoSection
 
 import { AIWriteMenu } from './ai-text';
 import { useProject } from './project';
-import ImageRemoveBackground from './sections/ImageRemoveBackground';
+import ImageRemoveBackground from './sections/ImageRemoveBackground'; 
 
 import fr from './translations/fr';
 import en from './translations/en';
@@ -184,8 +183,7 @@ const App = observer(({ store }) => {
                 IconsSection, 
                 ShapesSection, 
                 CustomAIImageSection, 
-                MyDesignsSection,
-                VideoSection // <-- Added VideoSection here
+                MyDesignsSection
               ]}
             />
           </SidePanelWrap>
